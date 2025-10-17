@@ -1,13 +1,51 @@
 import { isLiquidGlassAvailable } from "expo-glass-effect";
-import { useState } from "react";
-import { Platform, Pressable, Text, TextInput, View } from "react-native";
+import { router } from "expo-router";
+import { useRef, useState } from "react";
+import {
+  Alert,
+  Platform,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
 export default function FormScreen() {
   const [email, setEmail] = useState("");
+  const inputRef = useRef<TextInput>(null);
 
   async function handleSubmit() {
+    if (!email) {
+      alert("⚠️ Email is required");
+      return;
+    }
+
+    if (inputRef.current) {
+      // dismiss keyboard :)
+      inputRef.current.blur();
+    }
+
     try {
-      const response = await fetch("");
+      const urlPath = `${process.env.EXPO_BASE_URL!}/api/audience`;
+      const response = await fetch(urlPath, {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        console.log("somethign went wrong");
+      }
+
+      const data = await response.json();
+
+      console.log("client", data);
+
+      Alert.alert("Success", "You've been added to our contacts list", [
+        {
+          text: "Continue",
+          onPress: router.back,
+        },
+      ]);
     } catch (e) {
       alert("something went wrong");
       console.log(e);
@@ -48,8 +86,9 @@ export default function FormScreen() {
       </View>
 
       <TextInput
+        ref={inputRef}
         onChangeText={setEmail}
-        onSubmitEditing={() => alert("hey")}
+        onSubmitEditing={handleSubmit}
         placeholder="Email"
         cursorColor={"orange"}
         placeholderTextColor={"gray"}
