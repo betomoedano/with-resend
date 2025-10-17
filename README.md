@@ -1,50 +1,48 @@
-# Welcome to your Expo app 👋
+# with-resend
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is an [Expo](https://expo.dev) Router app that demonstrates how to capture email addresses in a native UI and push them into a [Resend](https://resend.com) audience through a route handler.
 
-## Get started
+## Prerequisites
 
-1. Install dependencies
+- Node.js 18 or newer (LTS recommended)
+- npm (ships with Node) or Bun
+- Expo CLI (available through `npx expo` or `pnpx expo`)
+- A Resend account with an API key and an Audience ID
+
+## Setup
+
+1. Install dependencies:
 
    ```bash
-   npm install
+   bun install
    ```
 
-2. Start the app
+2. Copy the example environment file and fill in your values:
 
    ```bash
-   npx expo start
+   cp .env.local.example .env.local
    ```
 
-In the output, you'll find options to open the app in a
+   - Replace `RESEND_API_KEY` with a key from the [Resend dashboard](https://resend.com/api-keys).
+   - Set `EXPO_PUBLIC_BASE_URL` to the URL that your Expo Router deployment will use. During local development Expo automatically exposes `EXPO_BASE_URL`, so you can leave this value as-is for the simulator or Expo Go.
+   - Update the `audienceId` constant in `app/api/audience+api.ts` with the ID of the audience you wish to populate. You can create or look up the ID in the [Resend audiences section](https://resend.com/app/audiences).
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+3. Start the development server:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+   ```bash
+   bun start
+   ```
 
-## Get a fresh project
+   Use the Expo CLI prompts to open the app on iOS, Android, the web, or inside Expo Go.
 
-When you're ready, run:
+## How it works
 
-```bash
-npm run reset-project
-```
+- The form in `app/form.tsx` posts email addresses to the `/api/audience` route defined in `app/api/audience+api.ts`.
+- That route handler uses the official Resend SDK to add each submitted email address to your configured audience through the `resend.contacts.create` call.
+- Successful submissions trigger a confirmation alert in the app; any issues are logged to the Metro terminal for quick debugging.
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Useful resources
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- [Expo documentation](https://docs.expo.dev/)
+- [Resend documentation](https://resend.com/docs/introduction)
+- [Resend audiences guide](https://resend.com/docs/audiences/overview)
