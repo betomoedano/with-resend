@@ -26,7 +26,7 @@ export default function FormScreen() {
     }
 
     try {
-      const urlPath = `${process.env.EXPO_BASE_URL!}/api/audience`;
+      const urlPath = `${process.env.EXPO_PUBLIC_BASE_URL!}/api/audience`;
       const response = await fetch(urlPath, {
         method: "POST",
         body: JSON.stringify({ email }),
